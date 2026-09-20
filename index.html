@@ -49,13 +49,14 @@
 
 const SUPABASE_URL="https://ekhwgjsmlmbortsczdit.supabase.co";
 const SUPABASE_KEY="sb_publishable_vK92HofJy2bBUWV-laqVgg_b-SWaI9N";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let supabaseClient=null; try{ if(window.supabase?.createClient) supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }catch(e){ console.warn("Conta indisponível:",e); }
 let currentUser=null;
 function downloadsKey(){return currentUser?"musicapp_downloads_"+currentUser.id:"musicapp_downloads_guest"}
 function abrirAuth(){document.getElementById("authModal").style.display="flex";document.getElementById("authStatus").textContent=currentUser?("Conectado como "+(currentUser.email||"usuário")):""}
 function fecharAuth(){document.getElementById("authModal").style.display="none"}
 function authMsg(msg){document.getElementById("authStatus").textContent=msg}
 async function entrarConta(){
+  if(!supabaseClient){authMsg("Login temporariamente indisponível. A pesquisa e o player continuam funcionando.");return}
   const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;
   if(!email||!password){authMsg("Preencha e-mail e senha.");return}
   authMsg("Entrando...");
@@ -64,6 +65,7 @@ async function entrarConta(){
   fecharAuth();
 }
 async function criarConta(){
+  if(!supabaseClient){authMsg("Cadastro temporariamente indisponível. A pesquisa e o player continuam funcionando.");return}
   const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;
   if(!email||password.length<6){authMsg("Use um e-mail e uma senha com pelo menos 6 caracteres.");return}
   authMsg("Criando conta...");
@@ -71,7 +73,7 @@ async function criarConta(){
   if(error){authMsg(error.message);return}
   if(data.session){fecharAuth()}else authMsg("Conta criada. Verifique seu e-mail se for solicitado e depois entre.");
 }
-async function sairConta(){await supabaseClient.auth.signOut()}
+async function sairConta(){if(supabaseClient)await supabaseClient.auth.signOut()}
 function atualizarConta(){
   const b=document.getElementById("accountButton");
   if(!b)return;
@@ -81,7 +83,7 @@ function atualizarConta(){
 async function sairOuConta(){
   if(confirm("Sair da conta?")){await sairConta();location.reload()}
 }
-supabaseClient.auth.onAuthStateChange((_event,session)=>{
+if(supabaseClient) supabaseClient.auth.onAuthStateChange((_event,session)=>{
   currentUser=session?.user||null;
   atualizarConta();
   if(typeof mostrarBiblioteca==="function")mostrarBiblioteca();
