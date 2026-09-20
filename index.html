@@ -34,6 +34,7 @@
 <nav class="bottom-nav"><button class="nav active" onclick="abrirPagina('home',this)"><span>🔍</span><small>Pesquisar</small></button><button class="nav" onclick="abrirPagina('downloads',this)"><span>📥</span><small>Baixadas</small></button></nav>
 </div>
 <script>
+(async()=>{try{for(const k of await caches.keys()){if(k.startsWith("musicapp-v2")||k.startsWith("musicapp-v3"))await caches.delete(k)}}catch(e){}})();
 const demoMusicas=[{id:"summer-nights",title:"Summer Nights",artist:"Artist One",file:"music/teste.mp3",cover:"🎵",downloadAllowed:true},{id:"midnight-drive",title:"Midnight Drive",artist:"Artist Two",file:"music/midnight-drive.mp3",cover:"🎶",downloadAllowed:true},{id:"lost-city",title:"Lost In The City",artist:"Artist Three",file:"music/lost-in-the-city.mp3",cover:"🎧",downloadAllowed:true}];
 const audio=new Audio();audio.preload="metadata";let currentSong=null;
 const playButton=document.getElementById("playButton"),songName=document.getElementById("songName"),artistName=document.getElementById("artistName"),miniCover=document.getElementById("miniCover"),songsBox=document.getElementById("songs");
