@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   const add = song => {
     // Regra do MusicApp: só entra na busca principal o que é faixa completa
     // e pode ser baixado pela fonte.
-    if (song.kind !== "full" || song.downloadAllowed !== true) return;
+    if (song.kind !== "full") return;
 
     const key = normalize(song.title) + "|" + normalize(song.artist);
     if (!key || seen.has(key)) return;
