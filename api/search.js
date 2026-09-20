@@ -75,6 +75,7 @@ module.exports = async (req, res) => {
               cover: t.album_image || t.image || "",
               audioId: String(t.id),
               file: t.audio || "",
+              downloadFile: t.audiodownload || "",
               downloadAllowed: Boolean(t.audiodownload_allowed),
               source: "Jamendo",
               playCount: Number(t.listeners || 0),
