@@ -9,10 +9,18 @@ module.exports = async (req, res) => {
     return res.status(400).send("Modo inválido");
   }
 
+  const apiKey = String(process.env.AUDIUS_API_KEY || "").trim();
+
+  const addAudiusParams = url => {
+    url.searchParams.set("app_name", "MusicApp");
+    if (apiKey) url.searchParams.set("api_key", apiKey);
+    return url;
+  };
+
   try {
     if (mode === "download") {
-      const metaUrl = new URL(
-        "https://api.audius.co/v1/tracks/" + encodeURIComponent(id)
+      const metaUrl = addAudiusParams(
+        new URL("https://api.audius.co/v1/tracks/" + encodeURIComponent(id))
       );
 
       const metaResponse = await fetch(metaUrl);
@@ -28,17 +36,18 @@ module.exports = async (req, res) => {
       );
 
       if (!downloadable) {
-        return res
-          .status(403)
-          .send("Download não permitido para esta música");
+        return res.status(403).send("Download não permitido para esta música");
       }
     }
 
-    const endpoint =
-      "https://api.audius.co/v1/tracks/" +
-      encodeURIComponent(id) +
-      "/" +
-      (mode === "download" ? "download" : "stream");
+    const endpoint = addAudiusParams(
+      new URL(
+        "https://api.audius.co/v1/tracks/" +
+          encodeURIComponent(id) +
+          "/" +
+          (mode === "download" ? "download" : "stream")
+      )
+    );
 
     const r = await fetch(endpoint);
 
@@ -70,6 +79,7 @@ module.exports = async (req, res) => {
 
     Readable.fromWeb(r.body).pipe(res);
   } catch (e) {
+    console.error("audio error", e);
     return res.status(500).send("Erro ao obter áudio");
   }
 };
