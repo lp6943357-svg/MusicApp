@@ -1,4 +1,4 @@
-const CACHE_NAME="musicapp-v4";
+const CACHE_NAME="musicapp-v5";
 const AUDIO_CACHE="musicapp-audio-v2";
 const FILES=["./","./index.html","./manifest.json","./sw.js"];
 
