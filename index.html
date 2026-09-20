@@ -27,7 +27,7 @@
 </div>
 <main>
 <section id="home" class="page active">
-<div class="search">🔍<input id="searchInput" type="search" placeholder="Pesquisar músicas..."></div>
+<div class="search">🔍<input id="searchInput" type="search" placeholder="Pesquisar músicas..." autocomplete="off"><button id="searchButton" type="button" style="border:0;background:#8b5cf6;color:#fff;border-radius:10px;height:36px;padding:0 12px;font-weight:700">Buscar</button></div>
 <h2>Descobrir</h2>
 <div class="categories">
 <button onclick="descobrir('')">🎵 Todas</button>
@@ -108,7 +108,7 @@ async function descobrir(termo){
   document.getElementById("searchInput").value="";
   await buscar(termo);
 }
-let searchTimer;document.getElementById("searchInput").addEventListener("input",function(){clearTimeout(searchTimer);searchTimer=setTimeout(()=>buscar(this.value),350)});
+let searchTimer;const searchInput=document.getElementById("searchInput");const searchButton=document.getElementById("searchButton");function executarBusca(){clearTimeout(searchTimer);buscar(searchInput.value)}searchInput.addEventListener("input",function(){clearTimeout(searchTimer);if(this.value.trim().length>=2)searchTimer=setTimeout(()=>buscar(this.value),500)});searchInput.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();executarBusca()}});searchButton.addEventListener("click",executarBusca);
 function mostrarBiblioteca(){const lista=document.getElementById("downloadList"),b=JSON.parse(localStorage.getItem(downloadsKey())||"[]");lista.innerHTML="";if(!b.length){lista.innerHTML='<div class="empty"><div>📥</div><h3>Nenhuma música baixada</h3><p>Pesquise e baixe músicas para ouvir offline.</p></div>';return}b.forEach((item,index)=>{const el=document.createElement("div");el.className="music";el.innerHTML='<div class="cover">'+coverHtml(item)+'</div><div class="music-info"><strong>'+escapeHtml(item.title)+'</strong><span>'+escapeHtml(item.artist)+'</span></div><button class="delete">✕</button>';el.onclick=e=>{if(!e.target.classList.contains("delete"))tocar(item)};el.querySelector(".delete").onclick=async e=>{e.stopPropagation();try{const cache=await caches.open("musicapp-audio-v2");const url=item.file||("/api/audio?id="+encodeURIComponent(item.audioId||item.id));await cache.delete(url)}catch(_){}b.splice(index,1);localStorage.setItem(downloadsKey(),JSON.stringify(b));mostrarBiblioteca()};lista.appendChild(el)})}
 function abrirPagina(pagina,botao){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(pagina).classList.add("active");document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));botao.classList.add("active");if(pagina==="downloads")mostrarBiblioteca();window.scrollTo({top:0,behavior:"smooth"})}
