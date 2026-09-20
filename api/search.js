@@ -9,49 +9,75 @@ module.exports = async (req, res) => {
   const results = [];
   const seen = new Set();
 
+  const add = song => {
+    const key = (song.title + "|" + song.artist).toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    results.push(song);
+  };
+
   try {
+    // Audius: faixas completas de artistas que disponibilizam o áudio no catálogo.
     for (const query of queries) {
-      for (const sort of ["relevant", "popular"]) {
-        const url = new URL("https://api.audius.co/v1/tracks/search");
-        url.searchParams.set("query", query);
-        url.searchParams.set("limit", "20");
-        url.searchParams.set("sort_method", sort);
+      const url = new URL("https://api.audius.co/v1/tracks/search");
+      url.searchParams.set("query", query);
+      url.searchParams.set("limit", "20");
+      url.searchParams.set("sort_method", "relevant");
 
-        const r = await fetch(url);
-        const data = await r.json();
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const data = await r.json();
 
-        if (!r.ok) continue;
+      for (const t of data.data || []) {
+        add({
+          id: "audius-" + t.id,
+          title: t.title || "Sem título",
+          artist: t.user?.name || t.user?.handle || "Artista desconhecido",
+          cover: t.artwork?._480x480 || t.artwork?._150x150 || "",
+          audioId: String(t.id),
+          file: "/api/audio?id=" + encodeURIComponent(t.id),
+          downloadAllowed: Boolean(t.downloadable ?? t.isDownloadable),
+          source: "Audius",
+          playCount: Number(t.playCount || 0)
+        });
+      }
+    }
 
-        for (const t of data.data || []) {
-          const id = String(t.id);
-          if (seen.has(id)) continue;
-          seen.add(id);
+    // iTunes: catálogo comercial amplo para encontrar artistas/músicas populares.
+    // O preview é somente uma amostra autorizada; não oferecemos download.
+    for (const query of queries) {
+      const url = new URL("https://itunes.apple.com/search");
+      url.searchParams.set("term", query);
+      url.searchParams.set("media", "music");
+      url.searchParams.set("entity", "song");
+      url.searchParams.set("country", "BR");
+      url.searchParams.set("limit", "30");
 
-          results.push({
-            id,
-            title: t.title || "Sem título",
-            artist: t.user?.name || t.user?.handle || "Artista desconhecido",
-            cover:
-              t.artwork?._480x480 ||
-              t.artwork?._150x150 ||
-              t.artwork?._1000x1000 ||
-              "",
-            audioId: id,
-            downloadAllowed: Boolean(t.downloadable ?? t.isDownloadable),
-            license: t.license || "",
-            playCount: Number(t.playCount || 0)
-          });
-        }
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const data = await r.json();
+
+      for (const t of data.results || []) {
+        if (!t.previewUrl) continue;
+        add({
+          id: "itunes-" + t.trackId,
+          title: t.trackName || "Sem título",
+          artist: t.artistName || "Artista desconhecido",
+          cover: t.artworkUrl100 || "",
+          audioId: "",
+          file: t.previewUrl,
+          downloadAllowed: false,
+          source: "iTunes",
+          playCount: Number(t.trackCount || 0)
+        });
       }
     }
 
     results.sort((a, b) => b.playCount - a.playCount);
 
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
-    return res.status(200).json({ results: results.slice(0, 40) });
+    return res.status(200).json({ results: results.slice(0, 50) });
   } catch (e) {
-    return res.status(500).json({
-      error: "Erro de conexão com o catálogo Audius."
-    });
+    return res.status(500).json({ error: "Erro de conexão com os catálogos de música." });
   }
 };
