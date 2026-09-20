@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MusicApp</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b5cf6">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#080808;color:white}
+.app{max-width:480px;min-height:100vh;margin:auto;background:#101010;padding-bottom:150px}
+header{padding:25px 20px}header h1{font-size:28px}header h1 span{color:#8b5cf6}header p{color:#777;margin-top:5px;font-size:13px}
+main{padding:0 20px}.page{display:none}.page.active{display:block}
+.search{display:flex;align-items:center;gap:10px;background:#1b1b1b;border:1px solid #292929;border-radius:14px;padding:0 15px;height:50px}
+.search input{flex:1;background:transparent;border:none;outline:none;color:white;font-size:15px}.search input::placeholder{color:#777}
+h2{margin-top:25px;margin-bottom:15px;font-size:19px}
+.categories{display:flex;gap:8px;overflow-x:auto}.categories button{flex-shrink:0;background:#1b1b1b;color:#ddd;border:1px solid #292929;padding:9px 14px;border-radius:12px}
+.music{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #222}
+.cover{width:52px;height:52px;flex-shrink:0;background:#292929;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:23px}
+.music-info{flex:1;min-width:0}.music-info strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.music-info span{display:block;color:#777;font-size:13px;margin-top:5px}
+.download,.delete{width:40px;height:40px;flex-shrink:0;border:none;border-radius:50%;background:#1b1b1b;color:#aaa;font-size:17px}.download:active,.delete:active{transform:scale(.9)}.delete{color:#ff6b6b}
+.empty{text-align:center;color:#777;padding:60px 20px}.empty div{font-size:40px;margin-bottom:15px}.empty h3{color:#ddd;margin-bottom:8px}
+.player{position:fixed;left:50%;bottom:65px;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;background:#1b1b1b;border:1px solid #303030;border-radius:15px;padding:10px;display:flex;align-items:center;justify-content:space-between;z-index:10}
+.player-info{display:flex;align-items:center;gap:10px;min-width:0}.mini-cover{width:42px;height:42px;flex-shrink:0;background:#292929;border-radius:10px;display:flex;align-items:center;justify-content:center}.player-text{min-width:0}.player-text strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-text span{display:block;color:#777;font-size:11px;margin-top:3px}
+#playButton{width:40px;height:40px;flex-shrink:0;border:none;border-radius:50%;background:#8b5cf6;color:white;font-size:16px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:65px;background:#111;border-top:1px solid #222;display:flex;z-index:20}.nav{flex:1;border:none;background:transparent;color:#777;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.nav.active{color:#8b5cf6}.nav span{font-size:19px}.nav small{font-size:11px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>Music<span>App</span></h1><p>Suas músicas, do seu jeito.</p></header>
+<main>
+<section id="home" class="page active">
+<div class="search">🔍<input id="searchInput" type="text" placeholder="Pesquisar músicas..."></div>
+<h2>Descobrir</h2>
+<div class="categories"><button>🎵 Pop</button><button>🔥 Hits</button><button>🎸 Rock</button><button>🎧 Rap</button></div>
+<h2>Músicas</h2>
+<div id="songs">
+<div class="music" data-title="Summer Nights" data-artist="Artist One"><div class="cover">🎵</div><div class="music-info"><strong>Summer Nights</strong><span>Artist One</span></div><button class="download" onclick="baixar(this)">⬇</button></div>
+<div class="music" data-title="Midnight Drive" data-artist="Artist Two"><div class="cover">🎶</div><div class="music-info"><strong>Midnight Drive</strong><span>Artist Two</span></div><button class="download" onclick="baixar(this)">⬇</button></div>
+<div class="music" data-title="Lost In The City" data-artist="Artist Three"><div class="cover">🎧</div><div class="music-info"><strong>Lost In The City</strong><span>Artist Three</span></div><button class="download" onclick="baixar(this)">⬇</button></div>
+</div></section>
+<section id="downloads" class="page"><h2>📥 Minhas músicas</h2><div id="downloadList"></div></section>
+</main>
+<div class="player"><div class="player-info"><div class="mini-cover">🎵</div><div class="player-text"><strong id="songName">Nenhuma música</strong><span id="artistName">Escolha uma música</span></div></div><button id="playButton">▶</button></div>
+<nav class="bottom-nav"><button class="nav active" onclick="abrirPagina('home', this)"><span>🔍</span><small>Pesquisar</small></button><button class="nav" onclick="abrirPagina('downloads', this)"><span>📥</span><small>Baixadas</small></button></nav>
+</div>
+<script>
+const arquivoMusica="music/teste.mp3";const audio=new Audio(arquivoMusica);let currentSong=null;
+const playButton=document.getElementById("playButton"),songName=document.getElementById("songName"),artistName=document.getElementById("artistName");
+document.querySelectorAll("#songs .music").forEach(function(song){song.addEventListener("click",function(event){if(event.target.classList.contains("download"))return;currentSong=song;songName.textContent=song.dataset.title;artistName.textContent=song.dataset.artist;audio.currentTime=0;audio.play().then(function(){playButton.textContent="⏸"}).catch(console.log)})});
+playButton.onclick=function(){if(!currentSong)return;if(audio.paused){audio.play().then(function(){playButton.textContent="⏸"})}else{audio.pause();playButton.textContent="▶"}};
+audio.addEventListener("ended",function(){playButton.textContent="▶"});
+function abrirPagina(pagina,botao){document.querySelectorAll(".page").forEach(function(page){page.classList.remove("active")});document.getElementById(pagina).classList.add("active");document.querySelectorAll(".nav").forEach(function(nav){nav.classList.remove("active")});botao.classList.add("active")}
+function baixar(botao){const musica=botao.closest(".music"),titulo=musica.dataset.title,artista=musica.dataset.artist,link=document.createElement("a");link.href=arquivoMusica;link.download=titulo+" - "+artista+".mp3";link.target="_blank";document.body.appendChild(link);link.click();document.body.removeChild(link);let biblioteca=JSON.parse(localStorage.getItem("musicapp_downloads"))||[];if(!biblioteca.some(function(item){return item.title===titulo})){biblioteca.push({title:titulo,artist:artista,file:arquivoMusica});localStorage.setItem("musicapp_downloads",JSON.stringify(biblioteca))}botao.textContent="✓";setTimeout(function(){botao.textContent="⬇"},1500);mostrarBiblioteca()}
+function mostrarBiblioteca(){const lista=document.getElementById("downloadList"),biblioteca=JSON.parse(localStorage.getItem("musicapp_downloads"))||[];lista.innerHTML="";if(biblioteca.length===0){lista.innerHTML='<div class="empty"><div>📥</div><h3>Nenhuma música baixada</h3><p>As músicas baixadas aparecerão aqui.</p></div>';return}biblioteca.forEach(function(item,index){const musica=document.createElement("div");musica.className="music";musica.innerHTML='<div class="cover">🎵</div><div class="music-info"><strong>'+item.title+'</strong><span>'+item.artist+'</span></div><button class="delete">✕</button>';musica.addEventListener("click",function(event){if(event.target.classList.contains("delete"))return;currentSong=musica;songName.textContent=item.title;artistName.textContent=item.artist;audio.currentTime=0;audio.play().then(function(){playButton.textContent="⏸"})});musica.querySelector(".delete").addEventListener("click",function(){biblioteca.splice(index,1);localStorage.setItem("musicapp_downloads",JSON.stringify(biblioteca));mostrarBiblioteca()});lista.appendChild(musica)})}
+document.getElementById("searchInput").addEventListener("input",function(){const texto=this.value.toLowerCase();document.querySelectorAll("#songs .music").forEach(function(song){const titulo=song.dataset.title.toLowerCase(),artista=song.dataset.artist.toLowerCase();song.style.display=(titulo.includes(texto)||artista.includes(texto))?"flex":"none"})});
+mostrarBiblioteca();if("serviceWorker"in navigator){navigator.serviceWorker.register("sw.js").then(function(){console.log("MusicApp offline ativo!")}).catch(function(error){console.log("Erro no modo offline:",error)})}
+</script>
+</body></html>
