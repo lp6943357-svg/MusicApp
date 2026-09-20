@@ -8,6 +8,7 @@ module.exports = async (req, res) => {
   const queries = [...new Set([raw, normalize(raw)])].filter(Boolean);
   const results = [];
   const seen = new Set();
+  const apiKey = String(process.env.AUDIUS_API_KEY || "").trim();
 
   const add = song => {
     const key = (song.title + "|" + song.artist).toLowerCase();
@@ -17,63 +18,33 @@ module.exports = async (req, res) => {
   };
 
   try {
-    // Catálogo de previews autorizados, sem depender de chave externa.
-    // Isso garante que a pesquisa continue funcionando mesmo se o Audius estiver indisponível.
+    // Fonte principal: Audius. Ela fornece faixas completas e informa
+    // separadamente quando o artista autorizou o download.
     for (const query of queries) {
-      const url = new URL("https://itunes.apple.com/search");
-      url.searchParams.set("term", query);
-      url.searchParams.set("media", "music");
-      url.searchParams.set("entity", "song");
-      url.searchParams.set("country", "BR");
+      const url = new URL("https://api.audius.co/v1/tracks/search");
+      url.searchParams.set("query", query);
       url.searchParams.set("limit", "50");
+      url.searchParams.set("sort_method", "relevant");
+      url.searchParams.set("app_name", "MusicApp");
+      if (apiKey) url.searchParams.set("api_key", apiKey);
 
       const r = await fetch(url);
       if (!r.ok) continue;
       const data = await r.json();
 
-      for (const t of data.results || []) {
-        if (!t.previewUrl) continue;
+      for (const t of data.data || []) {
         add({
-          id: "itunes-" + t.trackId,
-          title: t.trackName || "Sem título",
-          artist: t.artistName || "Artista desconhecido",
-          cover: (t.artworkUrl100 || "").replace("100x100", "300x300"),
-          audioId: "",
-          file: t.previewUrl,
-          downloadAllowed: false,
-          source: "Prévia autorizada",
-          playCount: Number(t.trackCount || 0)
+          id: "audius-" + t.id,
+          title: t.title || "Sem título",
+          artist: t.user?.name || t.user?.handle || "Artista desconhecido",
+          cover: t.artwork?._480x480 || t.artwork?._150x150 || "",
+          audioId: String(t.id),
+          file: "/api/audio?id=" + encodeURIComponent(t.id),
+          downloadAllowed: Boolean(t.downloadable ?? t.isDownloadable),
+          source: "Audius",
+          playCount: Number(t.playCount || 0),
+          duration: Number(t.duration || 0)
         });
-      }
-    }
-
-    // Audius é opcional: só é consultado quando uma chave foi configurada no Vercel.
-    // Não deixamos uma falha do Audius impedir os resultados do iTunes.
-    if (process.env.AUDIUS_API_KEY) {
-      for (const query of queries) {
-        const url = new URL("https://api.audius.co/v1/tracks/search");
-        url.searchParams.set("query", query);
-        url.searchParams.set("limit", "30");
-        url.searchParams.set("sort_method", "relevant");
-        url.searchParams.set("api_key", process.env.AUDIUS_API_KEY);
-
-        const r = await fetch(url);
-        if (!r.ok) continue;
-        const data = await r.json();
-
-        for (const t of data.data || []) {
-          add({
-            id: "audius-" + t.id,
-            title: t.title || "Sem título",
-            artist: t.user?.name || t.user?.handle || "Artista desconhecido",
-            cover: t.artwork?._480x480 || t.artwork?._150x150 || "",
-            audioId: String(t.id),
-            file: "/api/audio?id=" + encodeURIComponent(t.id),
-            downloadAllowed: Boolean(t.downloadable ?? t.isDownloadable),
-            source: "Audius",
-            playCount: Number(t.playCount || 0)
-          });
-        }
       }
     }
 
