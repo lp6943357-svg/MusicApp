@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="app">
-<header><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><h1>Music<span>App</span></h1><p>Pesquise, baixe e ouça offline — direto no app.</p></div><button id="accountButton" onclick="abrirAuth()" style="border:1px solid #333;background:#1b1b1b;color:#fff;border-radius:12px;padding:9px 12px">Entrar</button></div></header>
+<header><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><h1>Music<span>App</span></h1><p>Pesquise, salve no app e ouça offline.</p></div><button id="accountButton" onclick="abrirAuth()" style="border:1px solid #333;background:#1b1b1b;color:#fff;border-radius:12px;padding:9px 12px">Entrar</button></div></header>
 <div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;align-items:center;justify-content:center;padding:20px">
   <div style="width:100%;max-width:380px;background:#181818;border:1px solid #333;border-radius:18px;padding:22px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h2 style="margin:0">Sua conta</h2><button onclick="fecharAuth()" style="border:0;background:transparent;color:#aaa;font-size:24px">×</button></div>
@@ -91,7 +91,7 @@ if(supabaseClient) supabaseClient.auth.onAuthStateChange((_event,session)=>{
 
 const demoMusicas=[{id:"summer-nights",title:"Summer Nights",artist:"Artist One",file:"music/teste.mp3",cover:"🎵",downloadAllowed:true},{id:"midnight-drive",title:"Midnight Drive",artist:"Artist Two",file:"music/midnight-drive.mp3",cover:"🎶",downloadAllowed:true},{id:"lost-city",title:"Lost In The City",artist:"Artist Three",file:"music/lost-in-the-city.mp3",cover:"🎧",downloadAllowed:true}];
 const audio=new Audio();audio.preload="metadata";let currentSong=null;
-const AUDIO_CACHE_NAME="musicapp-audio-v2";
+const AUDIO_CACHE_NAME="musicapp-audio-v3";
 async function prepararArmazenamentoOffline(){
   try{
     if(navigator.storage?.persist) await navigator.storage.persist();
@@ -101,7 +101,7 @@ async function prepararArmazenamentoOffline(){
     }
   }catch(e){console.warn("Armazenamento offline:",e)}
 }
-function cacheKey(song){return song.file||("/api/audio?id="+encodeURIComponent(song.audioId||song.id)+(String(song.source||"").toLowerCase().includes("jamendo")?"&source=jamendo":""))}
+function cacheKey(song){const source=String(song.source||"").toLowerCase().includes("jamendo")?"&source=jamendo":"";return location.origin+"/api/audio?id="+encodeURIComponent(song.audioId||song.id)+source}
 async function obterAudioOffline(song){
   const cache=await caches.open(AUDIO_CACHE_NAME);
   const key=cacheKey(song);
@@ -116,14 +116,14 @@ function coverHtml(song,mini=false){return song.cover&&/^https?:/i.test(song.cov
 function renderSongs(list){songsBox.innerHTML="";if(!list.length){songsBox.innerHTML='<div class="empty"><div>🔎</div><h3>Nada encontrado</h3><p>Pesquise outro nome ou artista.</p></div>';return}list.forEach(song=>{const el=document.createElement("div");el.className="music";const downloaded=isDownloaded(song.id);const allowed=song.downloadAllowed===true;el.innerHTML='<div class="cover">'+coverHtml(song)+'</div><div class="music-info"><strong>'+escapeHtml(song.title)+'</strong><span>'+escapeHtml(song.artist)+'</span><span class="source">'+escapeHtml(song.source||"MusicApp")+'</span></div><button class="download '+(downloaded?"ok ":"")+(allowed?"":"blocked")+'" '+(allowed?"":"disabled title=\"Download não permitido para esta faixa\"")+'>'+(!allowed?"🔒":(downloaded?"✓":"⬇"))+'</button>';el.onclick=e=>{if(e.target.classList.contains("download")){if(allowed)baixar(song,el.querySelector(".download"))}else tocar(song)};songsBox.appendChild(el)})}
 async function tocar(song){currentSong=song;songName.textContent=song.title;artistName.textContent=song.artist;miniCover.innerHTML=coverHtml(song,true);try{
   const offlineUrl=await obterAudioOffline(song);
-  const onlineFile=song.file||("/api/audio?id="+encodeURIComponent(song.audioId||song.id));
+  const onlineFile=song.file||("/api/audio?id="+encodeURIComponent(song.audioId||song.id)+(String(song.source||"").toLowerCase().includes("jamendo")?"&source=jamendo":""));
   audio.src=offlineUrl||onlineFile;
   await audio.play();playButton.textContent="⏸";configurarMediaSession()}catch(e){console.log(e);alert("Não foi possível reproduzir esta música. Se ela foi baixada, tente baixá-la novamente.")}}
 playButton.onclick=async()=>{if(!currentSong)return;if(audio.paused){await audio.play();playButton.textContent="⏸"}else{audio.pause();playButton.textContent="▶"}};
 audio.addEventListener("play",()=>playButton.textContent="⏸");audio.addEventListener("pause",()=>playButton.textContent="▶");audio.addEventListener("ended",()=>playButton.textContent="▶");
 function configurarMediaSession(){if(!("mediaSession"in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:currentSong.title,artist:currentSong.artist,album:"MusicApp"});for(const action of ["play","pause","seekbackward","seekforward"]){try{navigator.mediaSession.setActionHandler(action,()=>{if(action==="play")audio.play();if(action==="pause")audio.pause();if(action==="seekbackward")audio.currentTime=Math.max(0,audio.currentTime-10);if(action==="seekforward")audio.currentTime=Math.min(audio.duration||0,audio.currentTime+10)})}catch(_){} }}
 async function baixar(song,button){if(!currentUser){abrirAuth();return}if(song.downloadAllowed!==true)return;button.disabled=true;button.textContent="…";try{const source=(song.source||"").toLowerCase();const sourceParam=source.includes("jamendo")?"&source=jamendo":"";const response=await fetch("/api/audio?id="+encodeURIComponent(song.audioId||song.id)+"&mode=download"+sourceParam);if(!response.ok)throw new Error();const cache=await caches.open(AUDIO_CACHE_NAME);
-    await cache.put(cacheKey(song),response.clone());const list=JSON.parse(localStorage.getItem(downloadsKey())||"[]");if(!list.some(x=>x.id===song.id)){list.push(song);localStorage.setItem(downloadsKey(),JSON.stringify(list))}button.textContent="✓";button.classList.add("ok");mostrarBiblioteca()}catch(e){button.textContent="!";alert("Não foi possível baixar esta música.");setTimeout(()=>button.textContent="⬇",1200)}finally{button.disabled=false}}
+    await cache.put(cacheKey(song),response.clone());const list=JSON.parse(localStorage.getItem(downloadsKey())||"[]");if(!list.some(x=>x.id===song.id)){list.push(song);localStorage.setItem(downloadsKey(),JSON.stringify(list))}button.textContent="✓";button.classList.add("ok");mostrarBiblioteca()}catch(e){button.textContent="!";alert("Não foi possível salvar esta música offline.");setTimeout(()=>button.textContent="⬇",1200)}finally{button.disabled=false}}
 async function buscar(q){q=q.trim();if(!q){renderSongs(demoMusicas);return}songsBox.innerHTML='<div class="empty"><div>⏳</div><h3>Pesquisando...</h3><p>Buscando no catálogo.</p></div>';try{const r=await fetch("/api/search?q="+encodeURIComponent(q));const data=await r.json();if(!r.ok)throw new Error(data.error||"Erro");renderSongs(data.results)}catch(e){songsBox.innerHTML='<div class="empty"><div>⚠️</div><h3>Pesquisa indisponível</h3><p>'+escapeHtml(e.message)+'</p></div>'}}
 async function descobrir(termo){
   abrirPagina("home",document.querySelector('.nav'));
