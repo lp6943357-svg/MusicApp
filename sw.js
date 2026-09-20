@@ -1,4 +1,16 @@
-const CACHE_NAME="musicapp-v1";
-const FILES=["./","./index.html","./manifest.json","./music/teste.mp3"];
-self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(FILES)))});
-self.addEventListener("fetch",event=>{event.respondWith(caches.match(event.request).then(response=>response||fetch(event.request)))});
+const CACHE_NAME="musicapp-v2";
+const AUDIO_CACHE="musicapp-audio-v2";
+const FILES=["./","./index.html","./manifest.json","./sw.js"];
+self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
+self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!=="musicapp-v2"&&k!=="musicapp-audio-v2").map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener("fetch",event=>{
+ const url=new URL(event.request.url);
+ if(event.request.method!=="GET")return;
+ event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request).then(response=>{
+   if(url.origin===location.origin){
+     const copy=response.clone();
+     caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy));
+   }
+   return response;
+ }).catch(()=>caches.match("./"))));
+});
