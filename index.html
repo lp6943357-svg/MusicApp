@@ -1,140 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#8b5cf6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>MusicApp</title>
-<link rel="manifest" href="manifest.json">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Soldier Tattoo Studio — tatuagem profissional em Belo Horizonte.">
+<title>Soldier Tattoo Studio | Belo Horizonte</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{background:#080808;color:#fff}.app{max-width:480px;min-height:100vh;margin:auto;background:#101010;padding-bottom:150px}header{padding:25px 20px}header h1{font-size:28px}header h1 span{color:#8b5cf6}header p{color:#777;margin-top:5px;font-size:13px}main{padding:0 20px}.page{display:none}.page.active{display:block}.search{display:flex;align-items:center;gap:10px;background:#1b1b1b;border:1px solid #292929;border-radius:14px;padding:0 15px;height:50px}.search input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-size:15px}.search input::placeholder{color:#777}h2{margin-top:25px;margin-bottom:15px;font-size:19px}.categories{display:flex;gap:8px;overflow-x:auto}.categories button{flex-shrink:0;background:#1b1b1b;color:#ddd;border:1px solid #292929;padding:9px 14px;border-radius:12px}.music{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #222}.cover{width:52px;height:52px;flex-shrink:0;background:#292929;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:23px;overflow:hidden}.music-info{flex:1;min-width:0}.music-info strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.music-info span{display:block;color:#777;font-size:13px;margin-top:5px}.source{font-size:10px!important;color:#666!important;margin-top:3px!important}.download,.delete{width:40px;height:40px;flex-shrink:0;border:0;border-radius:50%;background:#1b1b1b;color:#aaa;font-size:17px}.download:active,.delete:active{transform:scale(.9)}.download.ok{color:#63e6be}.download[disabled]{opacity:.65}.download.blocked{opacity:.35;cursor:not-allowed}.delete{color:#ff6b6b}.status{font-size:12px;color:#777;margin:12px 0}.empty{text-align:center;color:#777;padding:60px 20px}.empty div{font-size:40px;margin-bottom:15px}.empty h3{color:#ddd;margin-bottom:8px}.player{position:fixed;left:50%;bottom:65px;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;background:#1b1b1b;border:1px solid #303030;border-radius:15px;padding:10px;display:flex;align-items:center;justify-content:space-between;z-index:10}.player-info{display:flex;align-items:center;gap:10px;min-width:0}.mini-cover{width:42px;height:42px;background:#292929;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}.player-text{min-width:0}.player-text strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-text span{display:block;color:#777;font-size:11px;margin-top:3px}#playButton{width:40px;height:40px;border:0;border-radius:50%;background:#8b5cf6;color:#fff;font-size:16px}.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:65px;background:#111;border-top:1px solid #222;display:flex;z-index:20}.nav{flex:1;border:0;background:transparent;color:#777;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.nav.active{color:#8b5cf6}.nav span{font-size:19px}.nav small{font-size:11px}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600&display=swap');
+:root{--bg:#090909;--panel:#111;--line:#252525;--muted:#9a9a9a;--white:#f5f5f2}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,Arial,sans-serif}a{text-decoration:none;color:inherit}.wrap{max-width:1180px;margin:auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(9,9,9,.78);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+.navin{height:76px;display:flex;align-items:center;justify-content:space-between}.brand{font-family:Oswald,sans-serif;letter-spacing:.08em;font-size:22px}.brand span{display:block;font-family:Inter;font-size:9px;letter-spacing:.3em;color:#aaa;margin-top:2px}.links{display:flex;gap:26px;color:#aaa;font-size:13px}.links a:hover{color:#fff}.navcta{border:1px solid #444;padding:11px 17px;border-radius:2px;font-size:12px;font-weight:700;letter-spacing:.06em}
+.hero{min-height:100vh;display:grid;align-items:end;position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(0,0,0,.94),rgba(0,0,0,.4)),url('https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=2000&q=88') center/cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#090909 0%,transparent 35%);pointer-events:none}.hero .wrap{position:relative;z-index:1;width:100%;padding-bottom:92px;padding-top:150px}.eyebrow{font-size:11px;letter-spacing:.32em;color:#bbb;text-transform:uppercase;margin-bottom:18px}.hero h1{font-family:Oswald,sans-serif;font-size:clamp(58px,9vw,112px);line-height:.9;letter-spacing:.015em;margin:0;max-width:900px;text-transform:uppercase}.hero p{max-width:570px;color:#c2c2c2;line-height:1.7;font-size:15px;margin:28px 0}.actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 22px;border:1px solid #555;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.btn.primary{background:#f1f1ed;color:#0a0a0a;border-color:#f1f1ed}.btn:hover{transform:translateY(-1px)}
+section{padding:110px 0;border-bottom:1px solid var(--line)}.sectionhead{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:42px}.kicker{color:#777;font-size:10px;letter-spacing:.25em;text-transform:uppercase}.sectionhead h2{font-family:Oswald;font-size:48px;text-transform:uppercase;margin:8px 0 0}.sectionhead p{color:#999;max-width:420px;line-height:1.7;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}.stat{padding:28px;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat strong{font-family:Oswald;font-size:38px}.stat span{display:block;color:#888;font-size:12px;margin-top:7px}
+.gallery{display:grid;grid-template-columns:1.25fr .75fr .75fr;grid-auto-rows:270px;gap:10px}.gallery .g{background:#151515;overflow:hidden;position:relative}.gallery .g:first-child{grid-row:span 2}.gallery img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:.5s}.gallery .g:hover img{transform:scale(1.04);filter:grayscale(0)}
+.styles{display:flex;flex-wrap:wrap;gap:9px}.tag{border:1px solid #303030;padding:13px 16px;color:#c4c4c4;font-size:12px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}.copy{color:#aaa;line-height:1.9;font-size:15px}.quote{border-left:2px solid #ddd;padding-left:25px;font-size:24px;line-height:1.45;font-family:Oswald;text-transform:uppercase}
+.contact{background:#0d0d0d}.contactgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px}.card{border:1px solid var(--line);padding:28px}.item{padding:20px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item small{display:block;color:#666;text-transform:uppercase;letter-spacing:.18em;font-size:9px;margin-bottom:7px}.item strong{font-size:14px}.item a:hover{color:#ddd}
+footer{padding:35px 0;color:#666;font-size:11px;display:flex;justify-content:space-between;gap:20px}
+.float{position:fixed;right:20px;bottom:20px;z-index:30;background:#f1f1ed;color:#080808;padding:14px 18px;font-size:11px;font-weight:800;letter-spacing:.08em;box-shadow:0 10px 35px #000}
+@media(max-width:800px){.links{display:none}.hero .wrap{padding-bottom:70px}.sectionhead,.split,.contactgrid{display:block}.sectionhead p{margin-top:18px}.stats{grid-template-columns:1fr}.stat{border-right:0;border-bottom:1px solid var(--line)}.stat:last-child{border-bottom:0}.gallery{grid-template-columns:1fr 1fr;grid-auto-rows:210px}.gallery .g:first-child{grid-column:span 2;grid-row:span 1}.sectionhead h2{font-size:40px}.quote{margin-top:35px}footer{display:block}.float{left:20px;right:20px;text-align:center}}
 </style>
 </head>
 <body>
-<div class="app">
-<header><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><h1>Music<span>App</span></h1><p>Pesquise, salve no app e ouça offline.</p></div><button id="accountButton" onclick="abrirAuth()" style="border:1px solid #333;background:#1b1b1b;color:#fff;border-radius:12px;padding:9px 12px">Entrar</button></div></header>
-<div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;align-items:center;justify-content:center;padding:20px">
-  <div style="width:100%;max-width:380px;background:#181818;border:1px solid #333;border-radius:18px;padding:22px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h2 style="margin:0">Sua conta</h2><button onclick="fecharAuth()" style="border:0;background:transparent;color:#aaa;font-size:24px">×</button></div>
-    <input id="authEmail" type="email" placeholder="Seu e-mail" style="width:100%;height:48px;margin-bottom:10px;padding:0 14px;border-radius:12px;border:1px solid #333;background:#101010;color:#fff;outline:0">
-    <input id="authPassword" type="password" placeholder="Senha" style="width:100%;height:48px;margin-bottom:12px;padding:0 14px;border-radius:12px;border:1px solid #333;background:#101010;color:#fff;outline:0">
-    <button onclick="entrarConta()" style="width:100%;height:46px;border:0;border-radius:12px;background:#8b5cf6;color:#fff;font-weight:700;margin-bottom:8px">Entrar</button>
-    <button onclick="criarConta()" style="width:100%;height:46px;border:1px solid #444;border-radius:12px;background:#222;color:#fff;font-weight:700">Criar conta</button>
-    <p id="authStatus" style="color:#888;font-size:12px;margin-top:12px;text-align:center"></p>
-  </div>
-</div>
+<nav><div class="wrap navin"><a class="brand" href="#">SOLDIER<span>TATTOO STUDIO · BH</span></a><div class="links"><a href="#studio">O estúdio</a><a href="#estilos">Estilos</a><a href="#portfolio">Portfólio</a><a href="#contato">Contato</a></div><a class="navcta" href="https://wa.me/5531975570528">AGENDAR</a></div></nav>
+<header class="hero"><div class="wrap"><div class="eyebrow">Boa Vista · Belo Horizonte · Desde 2011</div><h1>Arte que<br>fica na pele.</h1><p>Um estúdio privado para quem procura tatuagem com identidade, técnica e atendimento cuidadoso — do primeiro traço ao resultado final.</p><div class="actions"><a class="btn primary" href="https://wa.me/5531975570528">Falar pelo WhatsApp</a><a class="btn" href="#portfolio">Ver trabalhos</a></div></div></header>
 <main>
-<section id="home" class="page active">
-<div class="search">🔍<input id="searchInput" type="search" placeholder="Pesquisar músicas..." autocomplete="off"><button id="searchButton" type="button" style="border:0;background:#8b5cf6;color:#fff;border-radius:10px;height:36px;padding:0 12px;font-weight:700">Buscar</button></div>
-<h2>Descobrir</h2>
-<div class="categories">
-<button onclick="descobrir('')">🎵 Todas</button>
-<button onclick="descobrir('trending')">🔥 Hits</button>
-<button onclick="descobrir('rock')">🎸 Rock</button>
-<button onclick="descobrir('rap')">🎧 Rap</button>
-<button onclick="descobrir('pop')">💜 Pop</button>
-</div>
-<h2>Músicas</h2><div id="songs"></div>
-</section>
-<section id="downloads" class="page"><h2>📥 Minhas músicas</h2><div id="downloadList"></div></section>
+<section id="studio"><div class="wrap"><div class="sectionhead"><div><div class="kicker">01 · O estúdio</div><h2>Privado. Profissional.<br>Autoral.</h2></div><p>Em atividade desde 2011, o Soldier Tattoo Studio trabalha com uma proposta de atendimento privado e profissional, criando uma experiência mais tranquila e personalizada.</p></div><div class="stats"><div class="stat"><strong>5.0</strong><span>Avaliação no Google</span></div><div class="stat"><strong>492+</strong><span>Avaliações de clientes</span></div><div class="stat"><strong>2011</strong><span>Desde o início</span></div></div></div></section>
+<section id="estilos"><div class="wrap"><div class="sectionhead"><div><div class="kicker">02 · Especialidades</div><h2>Seu estilo.<br>Sua história.</h2></div><p>Do traço delicado aos projetos mais marcantes, diferentes linguagens podem ganhar forma na pele.</p></div><div class="styles"><span class="tag">Cover-up</span><span class="tag">Blackwork</span><span class="tag">Neo Tradicional</span><span class="tag">Old School</span><span class="tag">Abstrato</span><span class="tag">Realismo</span><span class="tag">Pontilhismo</span><span class="tag">Geométrico</span><span class="tag">Ilustrativo</span><span class="tag">Minimalista</span><span class="tag">Ornamentais</span><span class="tag">Surrealismo</span><span class="tag">Aquarela</span></div></div></section>
+<section id="portfolio"><div class="wrap"><div class="sectionhead"><div><div class="kicker">03 · Portfólio</div><h2>Traço, contraste<br>e presença.</h2></div><p>Uma apresentação visual pensada para destacar os trabalhos do estúdio. As imagens podem ser substituídas pelo portfólio real do Instagram.</p></div><div class="gallery"><div class="g"><img src="https://images.unsplash.com/photo-1542727365-19732a80dcfd?auto=format&fit=crop&w=1100&q=88" alt="Tatuagem em preto e cinza"></div><div class="g"><img src="https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?auto=format&fit=crop&w=800&q=88" alt="Arte de tatuagem"></div><div class="g"><img src="https://images.unsplash.com/photo-1565058379802-bbe93b2f703a?auto=format&fit=crop&w=800&q=88" alt="Tatuagem artística"></div><div class="g"><img src="https://images.unsplash.com/photo-1590246814883-57c3a5b4d7c3?auto=format&fit=crop&w=800&q=88" alt="Detalhe de tatuagem"></div><div class="g"><img src="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=800&q=88" alt="Tatuagem em preto"></div></div></div></section>
+<section><div class="wrap split"><div><div class="kicker">04 · Experiência</div><h2 style="font-family:Oswald;font-size:48px;text-transform:uppercase;margin:10px 0 25px">Atendimento<br>sem pressa.</h2><div class="copy">A proposta é entender a ideia de cada cliente e transformar referência, significado e estilo em um projeto pensado para a pele. O ambiente privado ajuda a tornar o processo mais confortável e pessoal.</div></div><div class="quote">“Um espaço para levar sua ideia a sério — e transformar ela em arte.”</div></div></section>
+<section id="contato" class="contact"><div class="wrap"><div class="sectionhead"><div><div class="kicker">05 · Contato</div><h2>Vamos criar<br>seu próximo projeto.</h2></div><p>Atendimento mediante agendamento. Entre em contato para conversar sobre sua ideia, estilo e disponibilidade.</p></div><div class="contactgrid"><div class="card"><div class="item"><small>WhatsApp</small><strong><a href="https://wa.me/5531975570528">+55 31 97557-0528</a></strong></div><div class="item"><small>Endereço</small><strong>Rua Guruá, 773 — Boa Vista<br>Belo Horizonte — MG · 31060-560</strong></div><div class="item"><small>Funcionamento</small><strong>Atendimento 24 horas · mediante agendamento</strong></div></div><div class="card"><div class="item"><small>Nota</small><strong>5.0 estrelas · 492 avaliações</strong></div><div class="item"><small>Pagamento</small><strong>Crédito · Débito · NFC</strong></div><div class="item"><small>Agendamento</small><a class="btn primary" style="margin-top:5px;width:100%" href="https://wa.me/5531975570528">CHAMAR NO WHATSAPP</a></div></div></div></div></section>
 </main>
-<div class="player"><div class="player-info"><div class="mini-cover" id="miniCover">🎵</div><div class="player-text"><strong id="songName">Nenhuma música</strong><span id="artistName">Escolha uma música</span></div></div><button id="playButton">▶</button></div>
-<nav class="bottom-nav"><button class="nav active" onclick="abrirPagina('home',this)"><span>🔍</span><small>Pesquisar</small></button><button class="nav" onclick="abrirPagina('downloads',this)"><span>📥</span><small>Baixadas</small></button></nav>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-(async()=>{try{for(const k of await caches.keys()){if(k.startsWith("musicapp-v2")||k.startsWith("musicapp-v3"))await caches.delete(k)}}catch(e){}})();
-
-const SUPABASE_URL="https://ekhwgjsmlmbortsczdit.supabase.co";
-const SUPABASE_KEY="sb_publishable_vK92HofJy2bBUWV-laqVgg_b-SWaI9N";
-let supabaseClient=null; try{ if(window.supabase?.createClient) supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }catch(e){ console.warn("Conta indisponível:",e); }
-let currentUser=null;
-function downloadsKey(){return currentUser?"musicapp_downloads_"+currentUser.id:"musicapp_downloads_guest"}
-function abrirAuth(){document.getElementById("authModal").style.display="flex";document.getElementById("authStatus").textContent=currentUser?("Conectado como "+(currentUser.email||"usuário")):""}
-function fecharAuth(){document.getElementById("authModal").style.display="none"}
-function authMsg(msg){document.getElementById("authStatus").textContent=msg}
-async function entrarConta(){
-  if(!supabaseClient){authMsg("Login temporariamente indisponível. A pesquisa e o player continuam funcionando.");return}
-  const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;
-  if(!email||!password){authMsg("Preencha e-mail e senha.");return}
-  authMsg("Entrando...");
-  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-  if(error){authMsg(error.message);return}
-  fecharAuth();
-}
-async function criarConta(){
-  if(!supabaseClient){authMsg("Cadastro temporariamente indisponível. A pesquisa e o player continuam funcionando.");return}
-  const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;
-  if(!email||password.length<6){authMsg("Use um e-mail e uma senha com pelo menos 6 caracteres.");return}
-  authMsg("Criando conta...");
-  const {data,error}=await supabaseClient.auth.signUp({email,password});
-  if(error){authMsg(error.message);return}
-  if(data.session){fecharAuth()}else authMsg("Conta criada. Verifique seu e-mail se for solicitado e depois entre.");
-}
-async function sairConta(){if(supabaseClient)await supabaseClient.auth.signOut()}
-function atualizarConta(){
-  const b=document.getElementById("accountButton");
-  if(!b)return;
-  b.textContent=currentUser?"Sair / Conta":"Entrar";
-  b.onclick=currentUser?sairOuConta:abrirAuth;
-}
-async function sairOuConta(){
-  if(confirm("Sair da conta?")){await sairConta();location.reload()}
-}
-if(supabaseClient) supabaseClient.auth.onAuthStateChange((_event,session)=>{
-  currentUser=session?.user||null;
-  atualizarConta();
-  if(typeof mostrarBiblioteca==="function")mostrarBiblioteca();
-});
-
-const demoMusicas=[{id:"summer-nights",title:"Summer Nights",artist:"Artist One",file:"music/teste.mp3",cover:"🎵",downloadAllowed:true},{id:"midnight-drive",title:"Midnight Drive",artist:"Artist Two",file:"music/midnight-drive.mp3",cover:"🎶",downloadAllowed:true},{id:"lost-city",title:"Lost In The City",artist:"Artist Three",file:"music/lost-in-the-city.mp3",cover:"🎧",downloadAllowed:true}];
-const audio=new Audio();audio.preload="metadata";let currentSong=null;
-const AUDIO_CACHE_NAME="musicapp-audio-v3";
-async function prepararArmazenamentoOffline(){
-  try{
-    if(navigator.storage?.persist) await navigator.storage.persist();
-    if(navigator.storage?.estimate){
-      const q=await navigator.storage.estimate();
-      console.log("Armazenamento MusicApp:",Math.round((q.usage||0)/1048576)+"MB de "+Math.round((q.quota||0)/1048576)+"MB");
-    }
-  }catch(e){console.warn("Armazenamento offline:",e)}
-}
-function cacheKey(song){const source=String(song.source||"").toLowerCase().includes("jamendo")?"&source=jamendo":"";return location.origin+"/api/audio?id="+encodeURIComponent(song.audioId||song.id)+source}
-async function obterAudioOffline(song){
-  const cache=await caches.open(AUDIO_CACHE_NAME);
-  const key=cacheKey(song);
-  const cached=await cache.match(key);
-  if(cached) return URL.createObjectURL(await cached.blob());
-  return null;
-}
-const playButton=document.getElementById("playButton"),songName=document.getElementById("songName"),artistName=document.getElementById("artistName"),miniCover=document.getElementById("miniCover"),songsBox=document.getElementById("songs");
-function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function isDownloaded(id){return JSON.parse(localStorage.getItem(downloadsKey())||"[]").some(x=>x.id===id)}
-function coverHtml(song,mini=false){return song.cover&&/^https?:/i.test(song.cover)?'<img src="'+escapeHtml(song.cover)+'" style="width:100%;height:100%;object-fit:cover;border-radius:'+(mini?"10":"12")+'px">':(song.cover||"🎵")}
-function renderSongs(list){songsBox.innerHTML="";if(!list.length){songsBox.innerHTML='<div class="empty"><div>🔎</div><h3>Nada encontrado</h3><p>Pesquise outro nome ou artista.</p></div>';return}list.forEach(song=>{const el=document.createElement("div");el.className="music";const downloaded=isDownloaded(song.id);const allowed=song.downloadAllowed===true;el.innerHTML='<div class="cover">'+coverHtml(song)+'</div><div class="music-info"><strong>'+escapeHtml(song.title)+'</strong><span>'+escapeHtml(song.artist)+'</span><span class="source">'+escapeHtml(song.source||"MusicApp")+'</span></div><button class="download '+(downloaded?"ok ":"")+(allowed?"":"blocked")+'" '+(allowed?"":"disabled title=\"Download não permitido para esta faixa\"")+'>'+(!allowed?"🔒":(downloaded?"✓":"⬇"))+'</button>';el.onclick=e=>{if(e.target.classList.contains("download")){if(allowed)baixar(song,el.querySelector(".download"))}else tocar(song)};songsBox.appendChild(el)})}
-async function tocar(song){currentSong=song;songName.textContent=song.title;artistName.textContent=song.artist;miniCover.innerHTML=coverHtml(song,true);try{
-  const offlineUrl=await obterAudioOffline(song);
-  const onlineFile=song.file||("/api/audio?id="+encodeURIComponent(song.audioId||song.id)+(String(song.source||"").toLowerCase().includes("jamendo")?"&source=jamendo":""));
-  audio.src=offlineUrl||onlineFile;
-  await audio.play();playButton.textContent="⏸";configurarMediaSession()}catch(e){console.log(e);alert("Não foi possível reproduzir esta música. Se ela foi baixada, tente baixá-la novamente.")}}
-playButton.onclick=async()=>{if(!currentSong)return;if(audio.paused){await audio.play();playButton.textContent="⏸"}else{audio.pause();playButton.textContent="▶"}};
-audio.addEventListener("play",()=>playButton.textContent="⏸");audio.addEventListener("pause",()=>playButton.textContent="▶");audio.addEventListener("ended",()=>playButton.textContent="▶");
-function configurarMediaSession(){if(!("mediaSession"in navigator))return;navigator.mediaSession.metadata=new MediaMetadata({title:currentSong.title,artist:currentSong.artist,album:"MusicApp"});for(const action of ["play","pause","seekbackward","seekforward"]){try{navigator.mediaSession.setActionHandler(action,()=>{if(action==="play")audio.play();if(action==="pause")audio.pause();if(action==="seekbackward")audio.currentTime=Math.max(0,audio.currentTime-10);if(action==="seekforward")audio.currentTime=Math.min(audio.duration||0,audio.currentTime+10)})}catch(_){} }}
-async function baixar(song,button){if(!currentUser){abrirAuth();return}if(song.downloadAllowed!==true)return;button.disabled=true;button.textContent="…";try{const source=(song.source||"").toLowerCase();const sourceParam=source.includes("jamendo")?"&source=jamendo":"";const response=await fetch("/api/audio?id="+encodeURIComponent(song.audioId||song.id)+"&mode=download"+sourceParam);if(!response.ok)throw new Error();const cache=await caches.open(AUDIO_CACHE_NAME);
-    await cache.put(cacheKey(song),response.clone());const list=JSON.parse(localStorage.getItem(downloadsKey())||"[]");if(!list.some(x=>x.id===song.id)){list.push(song);localStorage.setItem(downloadsKey(),JSON.stringify(list))}button.textContent="✓";button.classList.add("ok");mostrarBiblioteca()}catch(e){button.textContent="!";alert("Não foi possível salvar esta música offline.");setTimeout(()=>button.textContent="⬇",1200)}finally{button.disabled=false}}
-async function buscar(q){q=q.trim();if(!q){renderSongs(demoMusicas);return}songsBox.innerHTML='<div class="empty"><div>⏳</div><h3>Pesquisando...</h3><p>Buscando no catálogo.</p></div>';try{const r=await fetch("/api/search?q="+encodeURIComponent(q));const data=await r.json();if(!r.ok)throw new Error(data.error||"Erro");renderSongs(data.results)}catch(e){songsBox.innerHTML='<div class="empty"><div>⚠️</div><h3>Pesquisa indisponível</h3><p>'+escapeHtml(e.message)+'</p></div>'}}
-async function descobrir(termo){
-  abrirPagina("home",document.querySelector('.nav'));
-  if(!termo){renderSongs(demoMusicas);return}
-  document.getElementById("searchInput").value="";
-  await buscar(termo);
-}
-let searchTimer;const searchInput=document.getElementById("searchInput");const searchButton=document.getElementById("searchButton");function executarBusca(){clearTimeout(searchTimer);buscar(searchInput.value)}searchInput.addEventListener("input",function(){clearTimeout(searchTimer);if(this.value.trim().length>=2)searchTimer=setTimeout(()=>buscar(this.value),500)});searchInput.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();executarBusca()}});searchButton.addEventListener("click",executarBusca);
-function mostrarBiblioteca(){const lista=document.getElementById("downloadList"),b=JSON.parse(localStorage.getItem(downloadsKey())||"[]");lista.innerHTML="";if(!b.length){lista.innerHTML='<div class="empty"><div>📥</div><h3>Nenhuma música baixada</h3><p>Pesquise e baixe músicas para ouvir offline.</p></div>';return}b.forEach((item,index)=>{const el=document.createElement("div");el.className="music";el.innerHTML='<div class="cover">'+coverHtml(item)+'</div><div class="music-info"><strong>'+escapeHtml(item.title)+'</strong><span>'+escapeHtml(item.artist)+'</span></div><button class="delete">✕</button>';el.onclick=e=>{if(!e.target.classList.contains("delete"))tocar(item)};el.querySelector(".delete").onclick=async e=>{e.stopPropagation();try{const cache=await caches.open("musicapp-audio-v2");const url=item.file||("/api/audio?id="+encodeURIComponent(item.audioId||item.id));await cache.delete(cacheKey(item))}catch(_){}b.splice(index,1);localStorage.setItem(downloadsKey(),JSON.stringify(b));mostrarBiblioteca()};lista.appendChild(el)})}
-function abrirPagina(pagina,botao){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(pagina).classList.add("active");document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));botao.classList.add("active");if(pagina==="downloads")mostrarBiblioteca();window.scrollTo({top:0,behavior:"smooth"})}
-renderSongs(demoMusicas);mostrarBiblioteca();atualizarConta();prepararArmazenamentoOffline();if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(console.log);
-</script>
+<footer class="wrap"><span>SOLDIER TATTOO STUDIO</span><span>BELO HORIZONTE · MG</span></footer>
+<a class="float" href="https://wa.me/5531975570528">AGENDAR PELO WHATSAPP ↗</a>
 </body></html>
